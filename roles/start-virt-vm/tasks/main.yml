@@ -1,0 +1,14 @@
+---
+- name: Start virt-vm
+  shell: |
+    qm start {{ virt_vm_id }}
+  register: start_virt_result
+  failed_when: '"does not exist" in start_virt_result.stderr'
+  changed_when: '"already running" not in start_virt_result.stderr'
+
+- name: Wait for virt vm to be up
+  remote_user: "{{ virt_user }}"
+  wait_for_connection:
+    delay: 10
+    timeout: 180
+  delegate_to: "{{ virt_ip }}"

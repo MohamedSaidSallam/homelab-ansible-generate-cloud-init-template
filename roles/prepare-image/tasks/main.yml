@@ -1,0 +1,9 @@
+---
+- name: Install libguestfs-tools to use virt-customize
+  become: true
+  package:
+    name: libguestfs-tools
+    state: present
+
+- include_tasks: prepare_image.yaml
+  loop: "{{ cloud_init_images }}"

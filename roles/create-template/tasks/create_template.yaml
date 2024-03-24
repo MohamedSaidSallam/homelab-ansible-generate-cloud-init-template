@@ -1,0 +1,77 @@
+---
+- name: Resize Image to {{ image_size }} ({{ item.display_name }})
+  vars:
+    image_size: "{{ item.overrides.img_size | default(template_defaults.img_size) }}"
+  shell: |
+    qemu-img resize {{ cloud_init_target_image_path_template }} {{ image_size }}
+  changed_when: false
+
+- name: Delete Current Template ({{ item.id }}) ({{ item.display_name }})
+  shell: |
+    qm destroy {{ item.id }}
+  when: item.delete_existing_template
+  register: qm_destroy_result
+  changed_when: false
+  failed_when:
+    - qm_destroy_result.rc != 0
+    - "'does not exist' not in qm_destroy_result.stderr"
+
+- name: Create Base VM ({{ item.display_name }})
+  shell: |
+    qm create {{ item.id }} \
+        --memory {{ item.overrides.memory | default(template_defaults.memory) }} \
+        --cores {{ item.overrides.core | default(template_defaults.core) }} \
+        --numa {{ item.overrides.numa | default(template_defaults.numa) }} \
+        --ostype {{ item.overrides.ostype | default(template_defaults.ostype) }} \
+        --sockets {{ item.overrides.sockets | default(template_defaults.sockets) }} \
+        --cpu {{ item.overrides.cpu | default(template_defaults.cpu) }} \
+        --name {{ item.display_name }} \
+        --net0 {{ item.overrides.net0 | default(template_defaults.net0) }} \
+        --serial0 {{ item.overrides.serial0 | default(template_defaults.serial0) }} \
+        --vga {{ item.overrides.vga | default(template_defaults.vga) }} \
+        --agent {{ item.overrides.agent | default(template_defaults.agent) }},fstrim_cloned_disks={{ item.overrides.agent_fstrim | default(template_defaults.agent_fstrim) }} \
+        --tablet {{ item.overrides.tablet | default(template_defaults.tablet) }} \
+        --onboot {{ item.overrides.onboot | default(template_defaults.onboot) }} \
+        --ide2 {{ item.overrides.ide2 | default(template_defaults.ide2) }} \
+        --ciuser {{ item.overrides.default_user | default(template_defaults.default_user) }} \
+        --ipconfig0 ip={{ item.overrides.ip0 | default(template_defaults.ip0) }} \
+        --sshkeys {{ key_pub_path }} \
+        --startup down={{ item.overrides.shutdown_timeout | default(template_defaults.shutdown_timeout) }}
+  changed_when: false
+
+- name: Import Disk ({{ item.display_name }})
+  shell: |
+    qm importdisk \
+      {{ item.id }} \
+      {{ cloud_init_target_image_path_template }} \
+      {{ item.overrides.storage | default(template_defaults.storage) }}
+  changed_when: false
+  register: template_import_disk
+
+- name: Create Disk Interface ({{ item.display_name }})
+  vars:
+    imported_disk_name: "{{ template_import_disk.stdout_lines | last | regex_search(\"'.*?:(.*)'\", '\\1')  | first}}"
+    extra_scsi_args: "{{ item.overrides.storage_is_ssd | default(template_defaults.storage_is_ssd) | ternary(',ssd=1,discard=on', '')}}"
+  shell: |
+    qm set {{ item.id }} \
+      --scsihw {{ item.overrides.scsi | default(template_defaults.scsi) }} \
+      --scsi{{ item.overrides.scsi_index | default(template_defaults.scsi_index) }} \
+      {{ imported_disk_name }}{{extra_scsi_args}}
+  changed_when: false
+
+- name: Make Disk Bootable ({{ item.display_name }})
+  shell: |
+    qm set {{ item.id }} \
+      --boot c \
+      --bootdisk scsi{{ item.overrides.scsi_index | default(template_defaults.scsi_index) }}
+  changed_when: false
+
+- name: Pause to confirm template configuration ({{ item.display_name }})
+  ansible.builtin.pause:
+    prompt: "Please confirm from proxmox dashboard that template VM ({{ item.id }}, {{ item.display_name }}) config is ok. Continue?"
+  when: prompt_before_templating
+
+- name: Template VM
+  shell: |
+    qm template {{ item.id }}
+  changed_when: false

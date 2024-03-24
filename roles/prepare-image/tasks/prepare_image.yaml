@@ -1,0 +1,42 @@
+---
+- name: Set image paths ({{ item.image_name }})
+  ansible.builtin.set_fact:
+    download_image_path: "{{ cloud_init_image_path_template }}"
+    virt_customize_target_image_path: "{{ cloud_init_target_image_path_template }}"
+
+- name: Set download path to virt_customize target path if not duplicating image ({{ item.image_name }})
+  ansible.builtin.set_fact:
+    download_image_path: "{{ virt_customize_target_image_path }}"
+  when: not use_duplicate_image_for_virt_customize
+
+- name: Get cloud init image checksums ({{ item.image_name }})
+  uri:
+    url: "{{ item.checksum_url }}"
+    return_content: true
+  register: cloud_init_image_checksums
+
+- name: Download cloud init image ({{ item.image_name }})
+  vars:
+    checksum: "{{ cloud_init_image_checksums.content | regex_search('[0-9a-f]{64}(?= [^ ]*cloudimg-amd64\\.img)') }}"
+  ansible.builtin.get_url:
+    url: "{{ item.url }}"
+    dest: "{{ download_image_path }}"
+    mode: "0644"
+    checksum: "sha256:{{ checksum }}"
+
+- name: Duplicate image (for virt-customize to modify the duplicate) ({{ item.image_name }})
+  copy:
+    src: "{{ download_image_path }}"
+    dest: "{{ virt_customize_target_image_path }}"
+    remote_src: yes
+  when: use_duplicate_image_for_virt_customize
+
+- name: Pre-install Packages ({{ packages_to_install }}) ({{ item.image_name }})
+  become: true
+  vars:
+    packages_to_install: "{{ image_pre_install_packages | join(',') }}"
+  shell: |
+    virt-customize \
+      -a {{ virt_customize_target_image_path }} \
+      --install {{ packages_to_install }} \
+      --truncate /etc/machine-id

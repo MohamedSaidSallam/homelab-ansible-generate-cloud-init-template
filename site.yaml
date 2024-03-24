@@ -1,0 +1,2 @@
+---
+- import_playbook: generate_cloud_init_template.yaml

@@ -1,0 +1,31 @@
+---
+- name: Get virt public key
+  shell: |
+    ssh-keyscan -t rsa {{ virt_ip }}
+  register: virt_pub_key_result
+  changed_when: false
+
+- name: Add virt public key to known_hosts
+  vars:
+    virt_pub_key: "{{ virt_pub_key_result.stdout }}"
+    virt_host_name: "{{ virt_ip }}"
+  known_hosts:
+    name: "{{ virt_host_name }}"
+    key: "{{ virt_pub_key }}"
+    path: "{{ ssh_known_hosts_path }}"
+    state: present
+
+- name: Get proxmox public ssh key
+  slurp:
+    src: "{{ ssh_key_pub_path }}"
+  register: proxmox_pub_ssh_key_result
+
+- name: Add proxmox public ssh key to virt
+  remote_user: "{{ virt_user }}"
+  vars:
+    proxmox_pub_key: "{{ proxmox_pub_ssh_key_result['content'] | b64decode }}"
+  authorized_key:
+    user: "{{ virt_user }}"
+    state: present
+    key: "{{ proxmox_pub_key }}"
+  delegate_to: "{{ virt_ip }}"

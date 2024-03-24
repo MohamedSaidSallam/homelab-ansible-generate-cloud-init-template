@@ -1,0 +1,19 @@
+---
+# * ansible.posix.synchronize freezes and does nothing. manually using rsync
+
+- name: Install rsync
+  package:
+    name: rsync
+    state: present
+
+- name: Install rsync on virt
+  remote_user: "{{ virt_user }}"
+  package:
+    name: rsync
+    state: present
+  delegate_to: "{{ virt_ip }}"
+
+- name: Transfer file from virt to proxmox
+  shell: |
+    rsync -a --timeout 20 {{ virt_user }}@{{ virt_ip }}:{{ cloud_init_target_image_path_template }} {{ cloud_init_target_image_path_template }}
+  loop: "{{ cloud_init_images }}"

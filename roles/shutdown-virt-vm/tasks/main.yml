@@ -1,0 +1,10 @@
+---
+- name: Shutdown virt-vm
+  block:
+    - name: Shutdown virt vm using shutdown
+      shell: |
+        qm shutdown {{ virt_vm_id }} --timeout 100
+  rescue:
+    - name: Shutdown virt vm using stop
+      shell: |
+        qm stop {{ virt_vm_id }} --timeout 100

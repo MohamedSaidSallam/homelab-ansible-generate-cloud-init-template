@@ -1,0 +1,57 @@
+---
+prompt_before_templating: true
+
+key_pub_path: "{{ temp_work_dir }}/key.pub"
+
+template_defaults:
+  memory: "4096" # 4gb
+  core: "2"
+  numa: "0"
+  ostype: "l26"
+  sockets: "1"
+  cpu: "cputype=host"
+
+  net0: "virtio,bridge=vmbr0"
+  serial0: "socket"
+  vga: "serial0"
+  agent: "enabled=1"
+  agent_fstrim: "1"
+  tablet: "0"
+  onboot: "0"
+  ide2: "fast:cloudinit"
+  default_user: "default-user"
+  ip0: "dhcp"
+  shutdown_timeout: 60
+
+  img_size: "32G"
+
+  storage: "fast"
+  storage_is_ssd: true
+
+  scsi: "virtio-scsi-pci"
+  scsi_index: "0"
+
+templates: # image name from `cloud_init_images`
+  # - display_name: ubuntu-20-24-minimal
+  #   image_name: ubuntu-20-24-minimal
+  #   id: 8000
+  #   delete_existing_template: false
+  #   overrides: ~
+
+  # - display_name: ubuntu-20-24
+  #   image_name: ubuntu-20-24
+  #   id: 8001
+  #   delete_existing_template: false
+  #   overrides: ~
+
+  - display_name: ubuntu-22.04-minimal
+    image_name: ubuntu-22.04-minimal
+    id: 8002
+    delete_existing_template: false
+    overrides: ~
+
+  - display_name: ubuntu-22.04
+    image_name: ubuntu-22.04
+    id: 8003
+    delete_existing_template: false
+    overrides: ~

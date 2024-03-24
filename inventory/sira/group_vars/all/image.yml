@@ -1,0 +1,41 @@
+---
+# Soruces:
+# minimal: https://cloud-images.ubuntu.com/minimal/releases/
+#   Search for  RELEASE_NAME-minimal-cloudimg-amd64.img
+# minimal_checksum: same directory
+# ---
+# normal: https://cloud-images.ubuntu.com/
+#   Search for  RELEASE_NAME-server-cloudimg-amd64.img
+# normal_checksum: same directory
+
+cloud_init_images:
+  - image_name: ubuntu-22.04-minimal
+    url: https://cloud-images.ubuntu.com/minimal/releases/jammy/release-20240319/ubuntu-22.04-minimal-cloudimg-amd64.img
+    checksum_url: https://cloud-images.ubuntu.com/minimal/releases/jammy/release-20240319/SHA256SUMS
+
+  - image_name: ubuntu-22.04
+    url: https://cloud-images.ubuntu.com/jammy/20240319/jammy-server-cloudimg-amd64.img
+    checksum_url: https://cloud-images.ubuntu.com/jammy/20240319/SHA256SUMS
+
+  # - image_name: ubuntu-20-24
+  #   url: https://cloud-images.ubuntu.com/focal/20230506/focal-server-cloudimg-amd64.img
+  #   checksum_url: https://cloud-images.ubuntu.com/focal/20230506/SHA256SUMS
+
+  # - image_name: ubuntu-20-24-minimal
+  #   url: https://cloud-images.ubuntu.com/minimal/releases/focal/release-20230511/ubuntu-20.04-minimal-cloudimg-amd64.img
+  #   checksum_url: https://cloud-images.ubuntu.com/minimal/releases/focal/release-20230511/SHA256SUMS
+
+  # - image_name: ubuntu-20-24-minimal-latest
+  #   url: https://cloud-images.ubuntu.com/minimal/releases/focal/release/ubuntu-20.04-minimal-cloudimg-amd64.img
+  #   checksum_url: https://cloud-images.ubuntu.com/minimal/releases/focal/release/SHA256SUMS
+
+cloud_init_image_path_template: "{{ temp_work_dir }}/{{ item.image_name }}-fresh-download.qcow2"
+cloud_init_target_image_path_template: "{{ temp_work_dir }}/{{ item.image_name }}.qcow2"
+
+use_duplicate_image_for_virt_customize: true
+
+image_pre_install_packages:
+  - qemu-guest-agent
+  - tmux
+  - vim
+  - less

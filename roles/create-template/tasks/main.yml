@@ -1,0 +1,9 @@
+---
+- name: Copy Public Key
+  ansible.builtin.template:
+    src: key.pub.j2
+    dest: "{{ key_pub_path }}"
+    mode: "0644"
+
+- include_tasks: create_template.yaml
+  loop: "{{ templates }}"

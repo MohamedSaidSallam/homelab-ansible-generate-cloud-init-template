@@ -1,0 +1,43 @@
+---
+### Pre-Tasks ###
+- name: Pre-tasks (proxmox)
+  hosts: proxmox
+  gather_facts: false
+  roles:
+    - start-virt-vm
+    - copy-virt-ssh-to-proxmox
+
+- name: Pre-tasks (all_nodes)
+  hosts: all_nodes
+  gather_facts: false
+  roles:
+    - create-temp-directory
+
+### MAIN ###
+
+- name: Main (virt)
+  hosts: virt
+  gather_facts: true
+  roles:
+    - prepare-image
+
+- name: Main (proxmox)
+  hosts: proxmox
+  gather_facts: false
+  roles:
+    - copy-image-to-proxmox
+    - create-template
+
+### CLEANUP ###
+- name: Cleanup (all_nodes)
+  hosts: all_nodes
+  gather_facts: false
+  roles:
+    - cleanup
+
+- name: Cleanup (proxmox)
+  hosts: proxmox
+  gather_facts: false
+  roles:
+    - shutdown-virt-vm
+

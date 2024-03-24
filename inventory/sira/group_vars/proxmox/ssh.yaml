@@ -1,0 +1,4 @@
+---
+ssh_key_directory: "/root/.ssh"
+ssh_known_hosts_path: "{{ssh_key_directory}}/known_hosts"
+ssh_key_pub_path: "{{ssh_key_directory}}/id_rsa.pub"

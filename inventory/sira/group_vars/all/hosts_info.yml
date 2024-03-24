@@ -1,0 +1,3 @@
+---
+virt_ip: "{{ hostvars[groups['virt'][0]].ansible_host }}"
+virt_user: "{{ hostvars[groups['virt'][0]].ansible_user }}"

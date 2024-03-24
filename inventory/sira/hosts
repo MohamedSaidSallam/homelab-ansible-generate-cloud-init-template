@@ -1,0 +1,9 @@
+[proxmox]
+sira
+
+[virt]
+virt_vm
+
+[all_nodes:children]
+proxmox
+virt
