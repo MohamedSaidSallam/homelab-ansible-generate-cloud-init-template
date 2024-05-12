@@ -7,3 +7,5 @@
 
 - include_tasks: prepare_image.yaml
   loop: "{{ cloud_init_images }}"
+  loop_control:
+    label: "{{ item.image_name }}"

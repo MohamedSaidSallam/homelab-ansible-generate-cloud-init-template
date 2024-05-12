@@ -9,13 +9,21 @@
 # normal_checksum: same directory
 
 cloud_init_images:
-  - image_name: ubuntu-22.04-minimal
-    url: https://cloud-images.ubuntu.com/minimal/releases/jammy/release-20240319/ubuntu-22.04-minimal-cloudimg-amd64.img
-    checksum_url: https://cloud-images.ubuntu.com/minimal/releases/jammy/release-20240319/SHA256SUMS
+  - image_name: ubuntu-24.04-minimal
+    url: https://cloud-images.ubuntu.com/minimal/releases/noble/release-20240423/ubuntu-24.04-minimal-cloudimg-amd64.img
+    checksum_url: https://cloud-images.ubuntu.com/minimal/releases/noble/release-20240423/SHA256SUMS
 
-  - image_name: ubuntu-22.04
-    url: https://cloud-images.ubuntu.com/jammy/20240319/jammy-server-cloudimg-amd64.img
-    checksum_url: https://cloud-images.ubuntu.com/jammy/20240319/SHA256SUMS
+  - image_name: ubuntu-24.04
+    url: https://cloud-images.ubuntu.com/noble/20240505/noble-server-cloudimg-amd64.img
+    checksum_url: https://cloud-images.ubuntu.com/noble/20240505/SHA256SUMS
+
+  # - image_name: ubuntu-22.04-minimal
+  #   url: https://cloud-images.ubuntu.com/minimal/releases/jammy/release-20240319/ubuntu-22.04-minimal-cloudimg-amd64.img
+  #   checksum_url: https://cloud-images.ubuntu.com/minimal/releases/jammy/release-20240319/SHA256SUMS
+
+  # - image_name: ubuntu-22.04
+  #   url: https://cloud-images.ubuntu.com/jammy/20240319/jammy-server-cloudimg-amd64.img
+  #   checksum_url: https://cloud-images.ubuntu.com/jammy/20240319/SHA256SUMS
 
   # - image_name: ubuntu-20-24
   #   url: https://cloud-images.ubuntu.com/focal/20230506/focal-server-cloudimg-amd64.img

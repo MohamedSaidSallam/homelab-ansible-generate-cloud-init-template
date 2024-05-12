@@ -17,3 +17,5 @@
   shell: |
     rsync -a --timeout 20 {{ virt_user }}@{{ virt_ip }}:{{ cloud_init_target_image_path_template }} {{ cloud_init_target_image_path_template }}
   loop: "{{ cloud_init_images }}"
+  loop_control:
+    label: "{{ item.image_name }}"

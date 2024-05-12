@@ -1,2 +1,2 @@
 ---
-temp_work_dir: "/tmp/generate_cloud_init_template"
+temp_work_dir: "/tmp/generate_cloud_init_template" # * files in /tmp are deleted automatically

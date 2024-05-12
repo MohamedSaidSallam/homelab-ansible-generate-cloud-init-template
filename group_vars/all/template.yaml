@@ -20,6 +20,7 @@ template_defaults:
   onboot: "0"
   ide2: "fast:cloudinit"
   default_user: "default-user"
+  upgrade_packages_on_first_boot: "0"
   ip0: "dhcp"
   shutdown_timeout: 60
 
@@ -44,14 +45,26 @@ templates: # image name from `cloud_init_images`
   #   delete_existing_template: false
   #   overrides: ~
 
-  - display_name: ubuntu-22.04-minimal
-    image_name: ubuntu-22.04-minimal
-    id: 8002
+  # - display_name: ubuntu-22.04-minimal
+  #   image_name: ubuntu-22.04-minimal
+  #   id: 8002
+  #   delete_existing_template: false
+  #   overrides: ~
+
+  # - display_name: ubuntu-22.04
+  #   image_name: ubuntu-22.04
+  #   id: 8003
+  #   delete_existing_template: false
+  #   overrides: ~
+
+  - display_name: ubuntu-24.04-minimal
+    image_name: ubuntu-24.04-minimal
+    id: 8004
     delete_existing_template: false
     overrides: ~
 
-  - display_name: ubuntu-22.04
-    image_name: ubuntu-22.04
-    id: 8003
+  - display_name: ubuntu-24.04
+    image_name: ubuntu-24.04
+    id: 8005
     delete_existing_template: false
     overrides: ~

@@ -34,6 +34,7 @@
         --onboot {{ item.overrides.onboot | default(template_defaults.onboot) }} \
         --ide2 {{ item.overrides.ide2 | default(template_defaults.ide2) }} \
         --ciuser {{ item.overrides.default_user | default(template_defaults.default_user) }} \
+        --ciupgrade {{ item.overrides.upgrade_packages_on_first_boot | default(template_defaults.upgrade_packages_on_first_boot) }} \
         --ipconfig0 ip={{ item.overrides.ip0 | default(template_defaults.ip0) }} \
         --sshkeys {{ key_pub_path }} \
         --startup down={{ item.overrides.shutdown_timeout | default(template_defaults.shutdown_timeout) }}
